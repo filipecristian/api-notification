@@ -40,8 +40,6 @@ php bin/console doctrine:migrations:migrate
 ```
 
 # Running Unit Tests
-
-1. Running 
 ```
 docker exec -it api.notification.dev php bin/phpunit
 ```
