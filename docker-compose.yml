@@ -1,0 +1,41 @@
+version: '3.4'
+
+services:
+  mysql.notification.dev:
+    container_name: mysql.notification.dev
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./docker/mysql:/docker-entrypoint-initdb.d
+    networks:
+      - notification-network
+    ports:
+      - "3337:3306"
+
+  api.notification.dev:
+    container_name: api.notification.dev
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - ./app/.env
+    volumes:
+      - ./app:/app
+    networks:
+      - notification-network
+    ports:
+      - "8080:80"
+      - "8000:8000"
+    depends_on:
+      - mysql.notification.dev
+
+volumes:
+  notification_db:
+
+networks:
+  notification-network:
+    external: true

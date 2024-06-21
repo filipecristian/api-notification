@@ -1,0 +1,96 @@
+nelmio_api_doc:
+    documentation:
+        host: api.example.com
+        schemes: [http, https]
+        info:
+            title: Notification
+            description: Application responsibe for users notification
+            version: 1.0.0
+        servers:
+          - url: http://localhost:8080
+            description: Application server
+        paths:
+          /notification:
+            post:
+              summary: Notification
+              description: Send Notification
+              requestBody:
+                description: Notification object that to be sent
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/Notification'
+              responses:
+                '200':
+                  description: Notification with success
+                '404':
+                  description: Context or Channel not found
+                '429':
+                  description: Rate limit exceeded
+                '500':
+                  description: Internal Server Error
+
+        components:
+            schemas:
+              Notification:
+                type: object
+                properties:
+                  userId:
+                    type: integer
+                    format: int64
+                  context:
+                    type: string
+                  channel:
+                    type: string
+                  title:
+                    type: string
+                  message:
+                    type: string
+              Success:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+              GeneralError:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+            parameters:
+              skipParam:
+                name: skip
+                in: query
+                description: number of items to skip
+                required: true
+                schema:
+                  type: integer
+                  format: int32
+              limitParam:
+                name: limit
+                in: query
+                description: max records to return
+                required: true
+                schema:
+                  type: integer
+                  format: int32
+            responses:
+              NotFound:
+                description: Entity not found.
+              IllegalInput:
+                description: Illegal input for operation.
+              GeneralError:
+                description: General Error
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/GeneralError'
+
+
+    areas:
+        path_patterns: # an array of regexps
+            - ^/api(?!/doc$)
+        host_patterns:
+            - ^api\.
